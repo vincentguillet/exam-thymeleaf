@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService service;
-    private final UserMapper mapper;
+    private final UserService userService;
+    private final UserMapper userMapper;
 
     @GetMapping
     public String showUsers(Model model) {
-        model.addAttribute("users", service.findAllUsers()
+        model.addAttribute("users", userService.findAllUsers()
                 .stream()
-                .map(mapper::toDTO)
+                .map(userMapper::toDTO)
                 .toList());
         model.addAttribute("user", new UserDTO());
         return "users";
@@ -34,13 +34,13 @@ public class UserController {
     @PostMapping
     public String createUser(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("users", service.findAllUsers()
+            model.addAttribute("users", userService.findAllUsers()
                     .stream()
-                    .map(mapper::toDTO)
+                    .map(userMapper::toDTO)
                     .toList());
             return "users";
         }
-        service.addUser(mapper.toEntity(userDTO));
+        userService.addUser(userMapper.toEntity(userDTO));
         return "redirect:/users";
     }
 }
