@@ -12,4 +12,5 @@ public class Task {
     private String title;
     private TaskStatus status;
     private User assignee;
+    private Project project;
 }
