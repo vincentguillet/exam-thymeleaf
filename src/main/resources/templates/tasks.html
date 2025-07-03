@@ -80,6 +80,13 @@
                     <a th:href="@{'/tasks?edit=' + ${t.id}}" class="btn btn-outline-secondary btn-sm" title="Modifier">
                         <i class="bi bi-pencil"></i>
                     </a>
+
+                <form th:action="@{'/tasks/delete/' + ${t.id}}" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-outline-danger btn-sm"
+                            onclick="return confirm('Supprimer cette tâche ?')" title="Supprimer">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
                 </div>
                 <div th:if="${editingId} == ${t.id}">
                     <button type="button" class="btn btn-outline-success btn-sm" title="Enregistrer"

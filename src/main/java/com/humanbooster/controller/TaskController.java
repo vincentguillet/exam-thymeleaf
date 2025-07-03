@@ -46,12 +46,6 @@ public class TaskController {
         return "redirect:/tasks";
     }
 
-    @PostMapping("/{id}/next-status")
-    public String nextStatus(@PathVariable Long id) {
-        taskService.updateStatus(id);
-        return "redirect:/tasks";
-    }
-
     @PostMapping("/edit/{id}")
     public String editTask(@PathVariable Long id,
                            @RequestParam String title,
@@ -64,6 +58,12 @@ public class TaskController {
         System.out.println("DTO reçu : " + dto);
 
         taskService.updateTask(dto);
+        return "redirect:/tasks";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteTask(@PathVariable Long id) {
+        taskService.deleteTaskById(id);
         return "redirect:/tasks";
     }
 }

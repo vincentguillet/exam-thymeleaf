@@ -35,16 +35,12 @@ public class TaskService {
     }
 
     public void deleteTaskById(Long id) {
-        tasks.removeIf(u -> u.getId().equals(id));
-    }
-
-    public void updateStatus(Long id) {
-        findTaskById(id).ifPresent(task -> {
-            TaskStatus next = switch (task.getStatus()) {
-                case TODO -> TaskStatus.IN_PROGRESS;
-                case IN_PROGRESS, DONE -> TaskStatus.DONE;
-            };
-            task.setStatus(next);
+        Optional<Task> task = findTaskById(id);
+        task.ifPresent(t -> {
+            tasks.remove(t);
+            if (t.getProject() != null) {
+                t.getProject().getTasks().remove(t);
+            }
         });
     }
 
