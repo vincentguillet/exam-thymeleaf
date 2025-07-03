@@ -2,7 +2,9 @@ package com.humanbooster.controller;
 
 import com.humanbooster.dto.TaskDTO;
 import com.humanbooster.mapper.TaskMapper;
+import com.humanbooster.service.ProjectService;
 import com.humanbooster.service.TaskService;
+import com.humanbooster.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,14 +15,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    private final TaskService service;
-    private final TaskMapper mapper;
+    private final TaskService taskService;
+    private final TaskMapper taskMapper;
+
+    private final UserService userService;
+    private final ProjectService projectService;
 
     @GetMapping
     public String showTasks(@RequestParam(required = false) Long edit, Model model) {
-        model.addAttribute("tasks", service.findAllTasks().stream().map(mapper::toDTO).toList());
+        model.addAttribute("tasks", taskService.findAllTasks().stream().map(taskMapper::toDTO).toList());
         model.addAttribute("task", new TaskDTO());
         model.addAttribute("editingId", edit != null ? edit : -1L);
+        model.addAttribute("users", userService.findAllUsers());
+        model.addAttribute("projects", projectService.findAllProjects());
         return "tasks";
     }
 
@@ -28,20 +35,20 @@ public class TaskController {
     public String createTask(@ModelAttribute("task") TaskDTO dto, Model model) {
         if (dto.getTitle() == null || dto.getProjectId() == null || dto.getAssigneeId() == null) {
             model.addAttribute("error", "Champs requis");
-            model.addAttribute("tasks", service.findAllTasks()
+            model.addAttribute("tasks", taskService.findAllTasks()
                     .stream()
-                    .map(mapper::toDTO)
+                    .map(taskMapper::toDTO)
                     .toList());
             return "tasks";
         }
 
-        service.addTask(mapper.toEntity(dto));
+        taskService.addTask(taskMapper.toEntity(dto));
         return "redirect:/tasks";
     }
 
     @PostMapping("/{id}/next-status")
     public String nextStatus(@PathVariable Long id) {
-        service.updateStatus(id);
+        taskService.updateStatus(id);
         return "redirect:/tasks";
     }
 
@@ -56,7 +63,7 @@ public class TaskController {
 
         System.out.println("DTO reçu : " + dto);
 
-        service.updateTask(dto);
+        taskService.updateTask(dto);
         return "redirect:/tasks";
     }
 }
