@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{fragments/header :: header(title='Accueil')}">
   <title>Titre de la page</title>
 </head>
@@ -11,6 +12,7 @@
   <h1 class="mb-4">Bienvenue !</h1>
   <p class="lead">Choisissez une action à effectuer</p>
 
+  <!-- Buttons to manage users, projects, and tasks -->
   <div class="row justify-content-center mt-4">
     <div class="col-md-3">
       <a th:href="@{/users}" class="btn btn-primary w-100 mb-3">Gérer les utilisateurs</a>

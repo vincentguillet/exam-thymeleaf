@@ -7,7 +7,10 @@
 
 <nav th:replace="~{fragments/header :: navbar}"></nav>
 
+<!-- Project Management Page -->
 <div class="container mt-4">
+
+    <!-- Form to create a new project -->
     <h2>Créer un projet</h2>
     <form th:action="@{/projects}" method="post" th:object="${project}" class="mb-4">
         <div class="mb-3">
@@ -23,6 +26,7 @@
         <button type="submit" class="btn btn-primary">Créer</button>
     </form>
 
+    <!-- Project List -->
     <h2>Liste des projets</h2>
     <table class="table table-striped">
         <thead>
@@ -34,12 +38,16 @@
         </tr>
         </thead>
         <tbody>
+
+        <!-- Project Table Rows -->
         <tr th:each="p : ${projects}">
             <td th:text="${p.id}"></td>
             <td th:text="${p.name}"></td>
             <td th:text="${p.creator}"></td>
             <td th:text="${p.tasks.size()}"></td>
             <td>
+
+                <!-- Remove Project Button -->
                 <form th:action="@{'/projects/delete/' + ${p.id}}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-outline-danger btn-sm"
                             onclick="return confirm('Supprimer ce projet supprimera aussi toutes ses tâches. Continuer ?');" title="Supprimer">

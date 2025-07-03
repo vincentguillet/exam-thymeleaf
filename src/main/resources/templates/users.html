@@ -7,7 +7,10 @@
 
 <nav th:replace="~{fragments/header :: navbar}"></nav>
 
+<!-- User Management Page -->
 <div class="container mt-4">
+
+    <!-- Form to create a new user -->
     <h2>Créer un utilisateur</h2>
     <form th:action="@{/users}" method="post" th:object="${user}" class="mb-4">
         <div class="mb-3">
@@ -18,6 +21,7 @@
         <button type="submit" class="btn btn-primary">Ajouter</button>
     </form>
 
+    <!-- User List -->
     <h2>Liste des utilisateurs</h2>
     <table class="table table-striped">
         <thead>
@@ -31,6 +35,8 @@
             <td th:text="${user.id}"></td>
             <td th:text="${user.username}"></td>
             <td>
+
+                <!-- Remove User Button -->
                 <form th:action="@{'/users/delete/' + ${user.id}}" method="post" style="display:inline;">
                     <button type="submit" class="btn btn-outline-danger btn-sm"
                             onclick="return confirm('Supprimer cet utilisateur supprimera ses projets et tâches associées. Continuer ?');" title="Supprimer">

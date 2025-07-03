@@ -8,7 +8,10 @@
 
 <nav th:replace="~{fragments/header :: navbar}"></nav>
 
+<!-- Task Management Page -->
 <div class="container mt-4">
+
+    <!-- Form to create a new task -->
     <h2>Créer une tâche</h2>
     <form th:action="@{/tasks}" method="post" th:object="${task}" class="mb-4">
         <div class="mb-3">
@@ -30,6 +33,7 @@
         <button type="submit" class="btn btn-primary">Créer</button>
     </form>
 
+    <!-- Task List -->
     <h2>Liste des tâches</h2>
     <form th:action="@{'/tasks/edit/' + ${editingId}}" method="post" th:if="${editingId != null}" id="editForm">
         <input type="hidden" name="id" th:value="${editingId}"/>
@@ -37,6 +41,7 @@
         <input type="hidden" name="status" id="editStatus"/>
     </form>
 
+    <!-- Task Table -->
     <table class="table table-striped">
         <thead>
         <tr>
@@ -52,6 +57,7 @@
         <tr th:each="t : ${tasks}">
             <td th:text="${t.id}"></td>
 
+            <!-- Display title with conditional editing -->
             <td>
                 <span th:if="${editingId} != ${t.id}" th:text="${t.title}" th:id="|title-${t.id}|"></span>
                 <label>
@@ -60,6 +66,7 @@
                 </label>
             </td>
 
+            <!-- Display status with conditional editing -->
             <td>
                 <span th:if="${editingId} != ${t.id}" th:text="${t.status}" th:id="|status-${t.id}|"></span>
                 <label>
@@ -72,15 +79,20 @@
                 </label>
             </td>
 
+            <!-- Display assignee and project name -->
             <td th:text="${t.assignee}"></td>
             <td th:text="${t.projectName}"></td>
 
+            <!-- Actions: Edit/Delete -->
             <td>
+
+                <!-- Edit button -->
                 <div th:if="${editingId} != ${t.id}">
                     <a th:href="@{'/tasks?edit=' + ${t.id}}" class="btn btn-outline-secondary btn-sm" title="Modifier">
                         <i class="bi bi-pencil"></i>
                     </a>
 
+                    <!-- Delete button -->
                 <form th:action="@{'/tasks/delete/' + ${t.id}}" method="post" style="display:inline">
                     <button type="submit" class="btn btn-outline-danger btn-sm"
                             onclick="return confirm('Supprimer cette tâche ?')" title="Supprimer">
@@ -88,11 +100,17 @@
                     </button>
                 </form>
                 </div>
+
+                <!-- Edit actions when editing -->
                 <div th:if="${editingId} == ${t.id}">
+
+                    <!-- Save button -->
                     <button type="button" class="btn btn-outline-success btn-sm" title="Enregistrer"
                             th:onclick="|submitEdit(${t.id})|">
                         <i class="bi bi-save"></i>
                     </button>
+
+                    <!-- Cancel button -->
                     <a th:href="@{/tasks}" class="btn btn-outline-danger btn-sm" title="Annuler">
                         <i class="bi bi-x-circle"></i>
                     </a>
@@ -108,6 +126,8 @@
 
 <!--suppress JSUnusedGlobalSymbols -->
 <script>
+
+    // Function to toggle edit mode for a task
     function toggleEdit(id) {
         document.getElementById(`text-title-${id}`).classList.add("d-none");
         document.getElementById(`text-status-${id}`).classList.add("d-none");
@@ -118,6 +138,7 @@
         document.getElementById(`edit-actions-${id}`).classList.remove("d-none");
     }
 
+    // Function to cancel edit mode for a task
     function cancelEdit(id) {
         document.getElementById(`text-title-${id}`).classList.remove("d-none");
         document.getElementById(`text-status-${id}`).classList.remove("d-none");
@@ -128,6 +149,7 @@
         document.getElementById(`edit-actions-${id}`).classList.add("d-none");
     }
 
+    // Function to submit the edited task
     function submitEdit(id) {
         const title = document.getElementById('input-title-' + id).value;
         const status = document.getElementById('select-status-' + id).value;
