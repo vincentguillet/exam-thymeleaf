@@ -15,8 +15,10 @@
         <input type="text" th:field="*{name}" class="form-control" id="name" required>
     </div>
     <div class="mb-3">
-        <label for="creatorId" class="form-label">ID du créateur</label>
-        <input type="number" th:field="*{creatorId}" class="form-control" id="creatorId" required>
+        <label for="creatorId" class="form-label">Créateur</label>
+        <select th:field="*{creatorId}" class="form-select" id="creatorId" required>
+            <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.getUsername()}"></option>
+        </select>
     </div>
     <button type="submit" class="btn btn-primary">Créer</button>
 </form>
