@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header(title='Accueil')">
-  <title>Accueil</title>
+<head th:replace="~{fragments/header :: header(title='Accueil')}">
+  <title>Titre de la page</title>
 </head>
 <body>
 
 <nav th:replace="~{fragments/header :: navbar}"></nav>
 
 <div class="container text-center mt-5">
-  <h1 class="mb-4">Bienvenue sur l'application de gestion de tâches</h1>
-  <p class="lead">Utilisez le menu pour accéder aux différentes sections.</p>
+  <h1 class="mb-4">Bienvenue !</h1>
+  <p class="lead">Choisissez une action à effectuer</p>
 
   <div class="row justify-content-center mt-4">
     <div class="col-md-3">
-      <a th:href="@{/users}" class="btn btn-primary w-100 mb-3">Utilisateurs</a>
+      <a th:href="@{/users}" class="btn btn-primary w-100 mb-3">Gérer les utilisateurs</a>
     </div>
     <div class="col-md-3">
-      <a th:href="@{/projects}" class="btn btn-primary w-100 mb-3">Projets</a>
+      <a th:href="@{/projects}" class="btn btn-primary w-100 mb-3">Gérer les projets</a>
     </div>
     <div class="col-md-3">
-      <a th:href="@{/tasks}" class="btn btn-primary w-100 mb-3">Tâches</a>
+      <a th:href="@{/tasks}" class="btn btn-primary w-100 mb-3">Gérer les tâches</a>
     </div>
   </div>
 </div>
