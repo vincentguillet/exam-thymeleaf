@@ -80,6 +80,5 @@ public class TaskService {
         Task task = findTaskById(dto.getId()).orElseThrow();
         task.setTitle(dto.getTitle());
         task.setStatus(TaskStatus.valueOf(dto.getStatus()));
-        System.out.printf("Updated task %d: title=%s, status=%s%n", task.getId(), task.getTitle(), task.getStatus());
     }
 }
