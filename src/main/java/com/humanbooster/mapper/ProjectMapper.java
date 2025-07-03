@@ -10,13 +10,12 @@ public class ProjectMapper implements Mapper<Project, ProjectDTO> {
 
     @Override
     public Project toEntity(ProjectDTO dto) {
+        User creator = new User(dto.getCreatorId(), null);
         return new Project(
                 dto.getId(),
                 dto.getName(),
-                new User(dto.getId(), dto.getName()),
-                dto.getTasks()
-
-        );
+                creator,
+                dto.getTasks());
     }
 
     @Override
@@ -25,6 +24,7 @@ public class ProjectMapper implements Mapper<Project, ProjectDTO> {
                 project.getId(),
                 project.getName(),
                 project.getCreator() != null ? project.getCreator().getUsername() : null,
+                project.getCreator() != null ? project.getCreator().getId() : null,
                 project.getTasks()
         );
     }
