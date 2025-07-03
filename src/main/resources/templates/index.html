@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<nav th:replace="fragments/header :: navbar"></nav>
+<nav th:replace="~{fragments/header :: navbar}"></nav>
 
 <div class="container text-center mt-5">
   <h1 class="mb-4">Bienvenue sur l'application de gestion de tâches</h1>
@@ -24,6 +24,6 @@
   </div>
 </div>
 
-<footer th:replace="fragments/footer :: footer"></footer>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
