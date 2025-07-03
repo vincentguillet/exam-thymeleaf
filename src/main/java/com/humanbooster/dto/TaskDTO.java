@@ -15,4 +15,6 @@ public class TaskDTO {
 
     private Long assigneeId;
     private Long projectId;
+
+    private String projectName;
 }

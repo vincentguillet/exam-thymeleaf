@@ -39,7 +39,8 @@ public class TaskMapper implements Mapper<Task, TaskDTO> {
                 task.getStatus().name(),
                 task.getAssignee() != null ? task.getAssignee().getUsername() : null,
                 task.getAssignee() != null ? task.getAssignee().getId() : null,
-                task.getProject() != null ? task.getProject().getId() : null
+                task.getProject() != null ? task.getProject().getId() : null,
+                task.getProject() != null ? task.getProject().getName() : null
         );
     }
 }
