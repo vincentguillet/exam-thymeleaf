@@ -4,13 +4,9 @@ import com.humanbooster.dto.TaskDTO;
 import com.humanbooster.mapper.TaskMapper;
 import com.humanbooster.service.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @Controller
@@ -21,23 +17,30 @@ public class TaskController {
     private final TaskMapper mapper;
 
     @GetMapping
-    public List<TaskDTO> getAllTasks() {
-        return service.findAllTasks()
-                .stream()
-                .map(mapper::toDTO)
-                .toList();
+    public String showTasks(Model model) {
+        model.addAttribute("tasks", service.findAllTasks().stream().map(mapper::toDTO).toList());
+        model.addAttribute("task", new TaskDTO());
+        return "tasks";
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
-        return service.findTaskById(id)
-                .map(mapper::toDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PostMapping
+    public String createTask(@ModelAttribute("task") TaskDTO dto, Model model) {
+        if (dto.getTitle() == null || dto.getProjectId() == null || dto.getAssigneeId() == null) {
+            model.addAttribute("error", "Champs requis");
+            model.addAttribute("tasks", service.findAllTasks()
+                    .stream()
+                    .map(mapper::toDTO)
+                    .toList());
+            return "tasks";
+        }
+
+        service.addTask(mapper.toEntity(dto));
+        return "redirect:/tasks";
     }
 
-    @GetMapping("/create")
-    public String createTask() {
-        return null;
+    @PostMapping("/{id}/next-status")
+    public String nextStatus(@PathVariable Long id) {
+        service.updateStatus(id);
+        return "redirect:/tasks";
     }
 }

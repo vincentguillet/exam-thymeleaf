@@ -3,14 +3,15 @@ package com.humanbooster.controller;
 import com.humanbooster.dto.UserDTO;
 import com.humanbooster.mapper.UserMapper;
 import com.humanbooster.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -21,23 +22,25 @@ public class UserController {
     private final UserMapper mapper;
 
     @GetMapping
-    public List<UserDTO> getAllUsers() {
-        return service.findAllUsers()
+    public String showUsers(Model model) {
+        model.addAttribute("users", service.findAllUsers()
                 .stream()
                 .map(mapper::toDTO)
-                .toList();
+                .toList());
+        model.addAttribute("user", new UserDTO());
+        return "users";
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        return service.findUserById(id)
-                .map(mapper::toDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/create")
-    public String createUser() {
-        return null;
+    @PostMapping
+    public String createUser(@ModelAttribute("user") @Valid UserDTO userDTO, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("users", service.findAllUsers()
+                    .stream()
+                    .map(mapper::toDTO)
+                    .toList());
+            return "users";
+        }
+        service.addUser(mapper.toEntity(userDTO));
+        return "redirect:/users";
     }
 }

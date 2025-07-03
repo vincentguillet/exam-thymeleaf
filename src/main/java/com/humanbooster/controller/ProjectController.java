@@ -4,13 +4,12 @@ import com.humanbooster.dto.ProjectDTO;
 import com.humanbooster.mapper.ProjectMapper;
 import com.humanbooster.service.ProjectService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -21,23 +20,27 @@ public class ProjectController {
     private final ProjectMapper mapper;
 
     @GetMapping
-    public List<ProjectDTO> getAllProjects() {
-        return service.findAllProjects()
+    public String showProjects(Model model) {
+        model.addAttribute("projects", service.findAllProjects()
                 .stream()
                 .map(mapper::toDTO)
-                .toList();
+                .toList());
+        model.addAttribute("project", new ProjectDTO());
+        return "projects";
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<ProjectDTO> getProjectById(@PathVariable Long id) {
-        return service.findProjectById(id)
-                .map(mapper::toDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/create")
-    public String createProject() {
-        return null;
+    @PostMapping
+    public String createProject(@ModelAttribute("project") ProjectDTO dto, Model model) {
+        if (dto.getName() == null || mapper.toEntity(dto).getCreator().getId() == null) {
+            model.addAttribute("error", "Champs requis");
+            model.addAttribute("projects", service.findAllProjects()
+                    .stream()
+                    .map(mapper::toDTO)
+                    .toList());
+            return "projects";
+        }
+        service.addProject(mapper.toEntity(dto));
+        return "redirect:/projects";
     }
 }
+
