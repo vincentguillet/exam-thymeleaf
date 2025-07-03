@@ -16,17 +16,27 @@
             <input type="text" th:field="*{title}" class="form-control" id="title" required>
         </div>
         <div class="mb-3">
-            <label for="assigneeId" class="form-label">ID de l'utilisateur</label>
-            <input type="number" th:field="*{assigneeId}" class="form-control" id="assigneeId" required>
+            <label for="assigneeId" class="form-label">Utilisateur assigné</label>
+            <select th:field="*{assigneeId}" class="form-select" id="assigneeId" required>
+                <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.getUsername()}"></option>
+            </select>
         </div>
         <div class="mb-3">
-            <label for="projectId" class="form-label">ID du projet</label>
-            <input type="number" th:field="*{projectId}" class="form-control" id="projectId" required>
+            <label for="projectId" class="form-label">Projet</label>
+            <select th:field="*{projectId}" class="form-select" id="projectId" required>
+                <option th:each="p : ${projects}" th:value="${p.id}" th:text="${p.getName()}"></option>
+            </select>
         </div>
         <button type="submit" class="btn btn-primary">Créer</button>
     </form>
 
     <h2>Liste des tâches</h2>
+    <form th:action="@{'/tasks/edit/' + ${editingId}}" method="post" th:if="${editingId != null}" id="editForm">
+        <input type="hidden" name="id" th:value="${editingId}"/>
+        <input type="hidden" name="title" id="editTitle"/>
+        <input type="hidden" name="status" id="editStatus"/>
+    </form>
+
     <table class="table table-striped">
         <thead>
         <tr>
@@ -40,57 +50,51 @@
         </thead>
         <tbody>
         <tr th:each="t : ${tasks}">
-            <form th:action="@{'/tasks/edit/' + ${t.id}}" method="post" th:id="|form-${t.id}|">
-                <input type="hidden" name="id" th:value="${t.id}" />
-                <td th:text="${t.id}"></td>
+            <td th:text="${t.id}"></td>
 
-                <td>
-                    <span th:id="|text-title-${t.id}|" th:text="${t.title}"></span>
-                    <label>
-                        <input type="text" name="title"
-                               th:value="${t.title}"
-                               class="form-control form-control-sm d-none"
-                               th:id="|input-title-${t.id}|" />
-                    </label>
-                </td>
+            <td>
+                <span th:if="${editingId} != ${t.id}" th:text="${t.title}" th:id="|title-${t.id}|"></span>
+                <label>
+                    <input th:if="${editingId} == ${t.id}" type="text" class="form-control form-control-sm"
+                           th:value="${t.title}" th:id="|input-title-${t.id}|"/>
+                </label>
+            </td>
 
-                <td>
-                    <span th:id="|text-status-${t.id}|" th:text="${t.status}"></span>
-                    <label>
-                        <select name="status" class="form-select form-select-sm d-none"
-                                th:id="|select-status-${t.id}|">
-                            <option value="TODO" th:selected="${t.status == 'TODO'}">TODO</option>
-                            <option value="IN_PROGRESS" th:selected="${t.status == 'IN_PROGRESS'}">IN_PROGRESS</option>
-                            <option value="DONE" th:selected="${t.status == 'DONE'}">DONE</option>
-                        </select>
-                    </label>
-                </td>
+            <td>
+                <span th:if="${editingId} != ${t.id}" th:text="${t.status}" th:id="|status-${t.id}|"></span>
+                <label>
+                    <select th:if="${editingId} == ${t.id}" class="form-select form-select-sm"
+                            th:id="|select-status-${t.id}|">
+                        <option value="TODO" th:selected="${t.status == 'TODO'}">TODO</option>
+                        <option value="IN_PROGRESS" th:selected="${t.status == 'IN_PROGRESS'}">IN_PROGRESS</option>
+                        <option value="DONE" th:selected="${t.status == 'DONE'}">DONE</option>
+                    </select>
+                </label>
+            </td>
 
-                <td th:text="${t.assignee}"></td>
-                <td th:text="${t.projectId}"></td>
+            <td th:text="${t.assignee}"></td>
+            <td th:text="${t.projectId}"></td>
 
-                <td>
-                    <div th:id="|actions-${t.id}|">
-                        <button type="button" class="btn btn-outline-secondary btn-sm"
-                                th:onclick="|toggleEdit(${t.id})|">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                    </div>
-
-                    <div th:id="|edit-actions-${t.id}|" class="d-none">
-                        <button type="submit" class="btn btn-outline-success btn-sm">
-                            <i class="bi bi-check-circle"></i>
-                        </button>
-                        <button type="button" class="btn btn-outline-danger btn-sm"
-                                th:onclick="|cancelEdit(${t.id})|">
-                            <i class="bi bi-x-circle"></i>
-                        </button>
-                    </div>
-                </td>
-            </form>
+            <td>
+                <div th:if="${editingId} != ${t.id}">
+                    <a th:href="@{'/tasks?edit=' + ${t.id}}" class="btn btn-outline-secondary btn-sm" title="Modifier">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                </div>
+                <div th:if="${editingId} == ${t.id}">
+                    <button type="button" class="btn btn-outline-success btn-sm" title="Enregistrer"
+                            th:onclick="|submitEdit(${t.id})|">
+                        <i class="bi bi-save"></i>
+                    </button>
+                    <a th:href="@{/tasks}" class="btn btn-outline-danger btn-sm" title="Annuler">
+                        <i class="bi bi-x-circle"></i>
+                    </a>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
+
 </div>
 
 <footer th:replace="~{fragments/footer :: footer}"></footer>
@@ -116,7 +120,16 @@
         document.getElementById(`actions-${id}`).classList.remove("d-none");
         document.getElementById(`edit-actions-${id}`).classList.add("d-none");
     }
-</script>
 
+    function submitEdit(id) {
+        const title = document.getElementById('input-title-' + id).value;
+        const status = document.getElementById('select-status-' + id).value;
+
+        document.getElementById('editTitle').value = title;
+        document.getElementById('editStatus').value = status;
+
+        document.getElementById('editForm').submit();
+    }
+</script>
 </body>
 </html>
