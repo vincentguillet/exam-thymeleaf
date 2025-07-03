@@ -1,5 +1,6 @@
 package com.humanbooster.service;
 
+import com.humanbooster.dto.TaskDTO;
 import com.humanbooster.model.Task;
 import com.humanbooster.model.TaskStatus;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,12 @@ public class TaskService {
             };
             task.setStatus(next);
         });
+    }
+
+    public void updateTask(TaskDTO dto) {
+        Task task = findTaskById(dto.getId()).orElseThrow();
+        task.setTitle(dto.getTitle());
+        task.setStatus(TaskStatus.valueOf(dto.getStatus()));
+        System.out.printf("Updated task %d: title=%s, status=%s%n", task.getId(), task.getTitle(), task.getStatus());
     }
 }

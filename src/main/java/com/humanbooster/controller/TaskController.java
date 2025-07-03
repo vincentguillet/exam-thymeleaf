@@ -17,9 +17,10 @@ public class TaskController {
     private final TaskMapper mapper;
 
     @GetMapping
-    public String showTasks(Model model) {
+    public String showTasks(@RequestParam(required = false) Long edit, Model model) {
         model.addAttribute("tasks", service.findAllTasks().stream().map(mapper::toDTO).toList());
         model.addAttribute("task", new TaskDTO());
+        model.addAttribute("editingId", edit != null ? edit : -1L);
         return "tasks";
     }
 
@@ -41,6 +42,21 @@ public class TaskController {
     @PostMapping("/{id}/next-status")
     public String nextStatus(@PathVariable Long id) {
         service.updateStatus(id);
+        return "redirect:/tasks";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editTask(@PathVariable Long id,
+                           @RequestParam String title,
+                           @RequestParam String status) {
+        TaskDTO dto = new TaskDTO();
+        dto.setId(id);
+        dto.setTitle(title);
+        dto.setStatus(status);
+
+        System.out.println("DTO reçu : " + dto);
+
+        service.updateTask(dto);
         return "redirect:/tasks";
     }
 }
