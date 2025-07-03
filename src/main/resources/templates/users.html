@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header(title='Titre de la page')">
+    <title>Gestion des utilisateurs</title>
+</head>
+<body>
+
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<div class="container mt-4">
+<h2>Créer un utilisateur</h2>
+<form th:action="@{/users}" method="post" th:object="${user}" class="mb-4">
+    <div class="mb-3">
+        <label for="username" class="form-label">Nom d'utilisateur</label>
+        <input type="text" th:field="*{username}" class="form-control" id="username" placeholder="Entrer un nom" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Ajouter</button>
+</form>
+
+<h2>Liste des utilisateurs</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nom d'utilisateur</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.username}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header(title='Titre de la page')">
+    <title>Gestion des Projets</title>
+</head>
+<body>
+
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<div class="container mt-4">
+<h2>Créer un projet</h2>
+<form th:action="@{/projects}" method="post" th:object="${project}" class="mb-4">
+    <div class="mb-3">
+        <label for="name" class="form-label">Nom du projet</label>
+        <input type="text" th:field="*{name}" class="form-control" id="name" required>
+    </div>
+    <div class="mb-3">
+        <label for="creatorId" class="form-label">ID du créateur</label>
+        <input type="number" th:field="*{creatorId}" class="form-control" id="creatorId" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Créer</button>
+</form>
+
+<h2>Liste des projets</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Créateur</th>
+        <th>Nb tâches</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${projects}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.name}"></td>
+        <td th:text="${p.creator}"></td>
+        <td th:text="${p.tasks.size()}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>

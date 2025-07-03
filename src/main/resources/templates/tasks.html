@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header(title='Titre de la page')">
+    <title>Gestion des tâches</title>
+</head>
+<body>
+
+<nav th:replace="fragments/header :: navbar"></nav>
+
+<div class="container mt-4">
+<h2>Créer une tâche</h2>
+<form th:action="@{/tasks}" method="post" th:object="${task}" class="mb-4">
+    <div class="mb-3">
+        <label for="title" class="form-label">Titre</label>
+        <input type="text" th:field="*{title}" class="form-control" id="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="assigneeId" class="form-label">ID de l'utilisateur</label>
+        <input type="number" th:field="*{assigneeId}" class="form-control" id="assigneeId" required>
+    </div>
+    <div class="mb-3">
+        <label for="projectId" class="form-label">ID du projet</label>
+        <input type="number" th:field="*{projectId}" class="form-control" id="projectId" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Créer</button>
+</form>
+
+<h2>Liste des tâches</h2>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Titre</th>
+        <th>Statut</th>
+        <th>Utilisateur</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="t : ${tasks}">
+        <td th:text="${t.id}"></td>
+        <td th:text="${t.title}"></td>
+        <td th:text="${t.status}"></td>
+        <td th:text="${t.assignee}"></td>
+        <td>
+            <form th:action="@{'/tasks/' + ${t.id} + '/next-status'}" method="post">
+                <button type="submit" class="btn btn-sm btn-warning">⏭️</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</div>
+
+<footer th:replace="fragments/footer :: footer"></footer>
+</body>
+</html>
