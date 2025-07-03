@@ -1,6 +1,7 @@
 package com.humanbooster.service;
 
 import com.humanbooster.model.Project;
+import com.humanbooster.model.Task;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,9 +14,11 @@ public class ProjectService {
     private final List<Project> projects = new ArrayList<>();
     private long nextId = 1;
     private final UserService userService;
+    private final TaskService taskService;
 
-    public ProjectService(UserService userService) {
+    public ProjectService(UserService userService, TaskService taskService) {
         this.userService = userService;
+        this.taskService = taskService;
     }
 
     public List<Project> findAllProjects() {
@@ -37,6 +40,12 @@ public class ProjectService {
     }
 
     public void deleteProjectById(Long id) {
-        projects.removeIf(u -> u.getId().equals(id));
+        Optional<Project> project = findProjectById(id);
+        project.ifPresent(p -> {
+            List<Task> tasksToRemove = new ArrayList<>(p.getTasks());
+            tasksToRemove.forEach(task -> taskService.deleteTaskById(task.getId()));
+
+            projects.remove(p);
+        });
     }
 }
