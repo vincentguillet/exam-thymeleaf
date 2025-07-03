@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a task in the system.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

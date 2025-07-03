@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Project Data Transfer Object (DTO) for transferring project data.
+ * This class is used to encapsulate project information in a structured format.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

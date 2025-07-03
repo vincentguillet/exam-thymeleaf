@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a project in the system.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

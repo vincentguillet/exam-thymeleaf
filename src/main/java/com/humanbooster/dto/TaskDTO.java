@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Task Data Transfer Object (DTO) for transferring task data.
+ * This class is used to encapsulate task information in a structured format.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
