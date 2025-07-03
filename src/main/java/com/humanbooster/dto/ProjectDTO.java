@@ -15,5 +15,8 @@ public class ProjectDTO {
     private Long id;
     private String name;
     private String creator;
+
+    private Long creatorId;
+
     private List<Task> tasks = new ArrayList<>();
 }
